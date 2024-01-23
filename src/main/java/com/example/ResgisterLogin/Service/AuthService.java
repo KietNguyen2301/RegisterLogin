@@ -18,7 +18,6 @@ public class AuthService {
 	private EmployeeRepo employeeRepo;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
 	@Autowired
 	private SendOtpToMailService sendOtpToMailService;
 	
@@ -55,6 +54,30 @@ public class AuthService {
          // Kiểm tra tính hợp lệ của mật khẩu cũ
          if (!isValidOldPassword(email, oldpassword)) {
              return "Mật khẩu cũ không hợp lệ. Thay đổi mật khẩu thất bại.";
+         }
+
+         // Kiểm tra tính hợp lệ của mã OTP
+         if (!isValidOtp(email, otp)) {
+             return "Mã OTP không hợp lệ. Thay đổi mật khẩu thất bại.";
+         }
+
+         // Thực hiện thay đổi mật khẩu
+         if (updatePassword(email, newpassword)) {
+             return "Thay đổi mật khẩu thành công";
+         } else {
+             return "Không thể thay đổi mật khẩu. Vui lòng thử lại sau.";
+         }
+     }
+     
+     public String forgotPassword(ChangePasswordDTO changePasswordDTO) {
+         // Lấy thông tin từ DTO
+         String email = changePasswordDTO.getEmail();
+         String newpassword = changePasswordDTO.getNewpassword();
+         String otp = changePasswordDTO.getOtp(); // Thêm trường OTP
+
+         // Kiểm tra tính hợp lệ của dữ liệu đầu vào
+         if (email == null || newpassword == null || otp == null) {
+             return "Dữ liệu không hợp lệ. Vui lòng cung cấp email, mật khẩu mới, và mã OTP.";
          }
 
          // Kiểm tra tính hợp lệ của mã OTP
@@ -124,11 +147,22 @@ public class AuthService {
      }
      
   // Trong AuthService.java
-     public String sendForgotPasswordOtp(String email) {
-         // Thực hiện logic gửi mã OTP đến email
-         String otp = sendOtpToMailService.sendOtpService(email);
-         return otp;
+     public String sendChangePasswordOtp(String email) {
+         // Kiểm tra xem email có tồn tại trong hệ thống hay không
+         if (isEmailValid(email)) {
+             // Gửi mã OTP qua email
+             String otp = sendOtpToMailService.sendOtpService(email);
+             return "Mã OTP đã được gửi đến email của bạn.";
+         } else {
+             return "Email không tồn tại trong hệ thống.";
+         }
      }
-
+     
+     private boolean isEmailValid(String email) {
+         // Thực hiện logic kiểm tra tính hợp lệ của email, có thể gọi đến cơ sở dữ liệu
+         // Hoặc sử dụng các điều kiện kiểm tra cụ thể
+         // Ở đây là ví dụ đơn giản, chỉ kiểm tra xem email có chứa ký tự '@' không
+         return email != null && email.contains("@");
+     }
 
 }

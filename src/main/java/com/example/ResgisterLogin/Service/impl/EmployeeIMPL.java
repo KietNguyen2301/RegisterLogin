@@ -89,7 +89,7 @@ public class EmployeeIMPL implements EmployeeService {
 	                        employeeDTO.getEmployeeid(),
 	                        employeeDTO.getEmployeename(),
 	                        employeeDTO.getEmail(),
-	                        encodedPassword // Sử dụng mật khẩu đã mã hóa
+	                        encodedPassword 
 	                );
 
 	                employeeRepo.save(employee);

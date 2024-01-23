@@ -66,17 +66,31 @@ public class EmployeeController {
 	    }
 	}
 	
-	// Trong EmployeeController.java
-	@PostMapping("/send-otp-for-password-reset")
-	public ResponseEntity<?> sendOtpForPasswordReset(@RequestParam String email) {
+	@PostMapping("/forgot-password")
+	public ResponseEntity<?> forgotPassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
 	    try {
-	        String otp = authService.sendForgotPasswordOtp(email);
-	        return ResponseEntity.ok("OTP sent successfully");
+	        // Gọi đến authService để xử lý logic thay đổi mật khẩu
+	        String result = authService.forgotPassword(changePasswordDTO);
+	        // Trả về một phản hồi thành công với thông điệp
+	        return ResponseEntity.ok(result);
 	    } catch (Exception e) {
+	        // Nếu có lỗi, in ra stack trace và trả về phản hồi lỗi máy chủ nội bộ
 	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending OTP");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during password change");
 	    }
 	}
+	
+	// Trong EmployeeController.java
+	@PostMapping("/send-otp-for-password-reset")
+	 public ResponseEntity<?> sendOtpForPasswordReset(@RequestParam String email) {
+        try {
+            String result = authService.sendChangePasswordOtp(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending OTP");
+        }
+    }
 
 
 }
