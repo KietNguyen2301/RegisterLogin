@@ -18,6 +18,11 @@ public interface EmployeeService {
 	String addEmployee(EmployeeDTO employeeDTO, String enteredOtp);
 	
 	String getStoredOtp(String email);
+
+	String editProfile(EmployeeDTO employeeDTO);
+
+	
+
 	
 
 }

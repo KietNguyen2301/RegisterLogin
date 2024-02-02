@@ -15,5 +15,6 @@ public interface EmployeeRepo extends JpaRepository<Employee,Integer>{
 
 	Employee findByEmail(String email);
 	Optional<Employee> findOneByEmailAndPassword(String email, String encodedPassword);
-	
+	// Thêm phương thức để tìm kiếm nhân viên theo ID
+    Optional<Employee> findById(int employeeId);
 }

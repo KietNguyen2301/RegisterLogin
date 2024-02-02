@@ -1,6 +1,8 @@
 package com.example.ResgisterLogin.Service.impl;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -109,4 +111,27 @@ public class EmployeeIMPL implements EmployeeService {
     public String getStoredOtp(String email) {
         return sendOtpToMailService.getStoredOtp(email);
     }
+    
+    
+    @Override
+    public String editProfile(EmployeeDTO employeeDTO) {
+        try {
+            int employeeId = employeeDTO.getEmployeeid();
+            Optional<Employee> existingEmployeeOptional = employeeRepo.findById(employeeId);
+            if (existingEmployeeOptional.isPresent()) {
+                Employee existingEmployee = existingEmployeeOptional.get();
+                existingEmployee.setEmployeename(employeeDTO.getEmployeename());
+                existingEmployee.setEmail(employeeDTO.getEmail());
+                employeeRepo.save(existingEmployee);
+                return "Profile updated successfully";
+            } else {
+                return "Employee not found";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error during profile update";
+        }
+    }
+
+
 }
